@@ -8,9 +8,9 @@ class King < Piece
   
   def valid_move_check(new_x, new_y)
     if (off_board? super(new_x, new_y) && valid_move?(new_x, new_y))
-      puts "The move is valid"
+      return true
     else
-      puts "The move is not valid"
+      false
     end
   end
 
