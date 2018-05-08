@@ -13,4 +13,4 @@ class Queen < Piece
 	  end 
 
 end
-#Not sure which valid_move? to use?
+
