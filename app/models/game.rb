@@ -6,6 +6,7 @@ class Game < ApplicationRecord
 
   scope :available, -> { where('white_player_id IS NULL OR black_player_id IS NULL') }
   scope :ongoing, -> { where.not('white_player_id IS NULL OR black_player_id IS NULL') }
+  scope :completed, -> { where.not(state: IN_PROGRESS) }
   
 
   validates :name, :presence => true
@@ -63,12 +64,12 @@ class Game < ApplicationRecord
     pieces.find_by(type: KING, is_white: is_white)
   end
 
-  def under_attack?(is_white, x_pos, y_pos)
-    pieces.where.not(is_white: is_white, x_position: nil).find_each do |piece|
-      return true if piece.valid_move?(x_pos, y_pos)
-      return true if piece.type == PAWN && piece.can_attack_square?(x_pos, y_pos)
-    end
-    false
+  #def under_attack?(is_white, x_pos, y_pos)
+    #pieces.where.not(is_white: is_white, x_position: nil).find_each do |piece|
+      #return true if piece.valid_move?(x_pos, y_pos)
+      #return true if piece.type == PAWN && piece.can_attack_square?(x_pos, y_pos)
+    #end
+    #false
   end
     
   def check?(is_white)
@@ -83,12 +84,14 @@ class Game < ApplicationRecord
     end
   end
 
+  
+
   #logic relating to state 
   IN_PROGRESS = 0
   FORFEIT = 1
   CHECKMATE = 2
   STALEMATE = 3
-  AGREED_DRAW = 4
+  DRAW = 4
 
-end
+
 

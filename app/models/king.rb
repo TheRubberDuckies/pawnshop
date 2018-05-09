@@ -13,7 +13,7 @@ end
   #still need to account for invalid move if King moves into check
 
 
-KING = 'King'.freeze
+
 
 
     

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180504002250) do
+ActiveRecord::Schema.define(version: 20180509173006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20180504002250) do
     t.boolean  "piece_moved",       default: false
     t.integer  "game_move_number",  default: 0,     null: false
     t.integer  "piece_move_number", default: 0,     null: false
+    t.integer  "pawn_moved_twice"
     t.index ["game_id"], name: "index_pieces_on_game_id", using: :btree
   end
 

@@ -14,24 +14,29 @@ class Piece < ApplicationRecord
 
   def move_to!(new_x, new_y)
     transaction do
-      raise ArgumentError, "#{type} has not moved." unless real_move?(new_x, new_y)
-      occupying_piece = game.get_piece_at_coor(new_x, new_y)
-      raise ArgumentError, "That is an invalid move for #{type}" unless valid_move?(new_x, new_y) 
-      raise ArgumentError, 'That is an invalid move. Cannot capture your own piece.' if same_color?(occupying_piece)
-      capture_piece!(occupying_piece) if square_occupied?(new_x, new_y)
-      update(x_position: new_x, y_position: new_y)
-      raise ArgumentError, 'That is an invalid move that leaves your king in check.' 
-      if game.under_attack?(is_white, game.your_king(is_white).x_position, game.your_king(is_white).y_position)
-    end
-  end
 
-  def same_color? (occupying_piece)
-    occupying_piece.present? && occupying_piece.color == color
+      if current_position?(new_x, new_y)
+        return "#{type} has not moved."
+      end 
+
+      if valid_move?(new_x, new_y)
+        return "That is an invalid move for #{type}" 
+      end 
+
+      if square_occupied?(new_x, new_y)
+        occupying_piece = game.get_piece_at_coor(new_x, new_y)
+        if (occupying_piece.is_white && is_white?) || (!occupying_piece.is_white && !is_white?)
+          return "That is an invalid move. Cannot capture your own piece."
+        else 
+          capture_piece!(occupying_piece) 
+        end
+      end
+      update(x_position: new_x, y_position: new_y)
+    end
   end
 
   def is_obstructed?(new_x, new_y)
     return false if type == KNIGHT
-    return true if off_board?(new_x, new_y)
     return true if straight_obstruction?(new_x, new_y)
     false
   end 
@@ -72,12 +77,15 @@ class Piece < ApplicationRecord
 
     y_values = if y_position.to_i < new_y.to_i
                  (y_position.to_i..new_y.to_i).to_a 
-               elsif y_position.to_i > new_y
-                 y_position.to_i.downto(new_y.to_i).to_a
+               elsif 
+                  y_position.to_i > new_y.to_i
+                  y_position.to_i.downto(new_y.to_i).to_a
                else 
+                 range_x = (new_x.to_i - x_position.to_i).abs
                  Array.new(range_x + 1, new_y.to_i)
                end
     coordinates_array(x_values, y_values)
+  end 
 
   def square_occupied?(new_x, new_y)
     piece = game.pieces.find_by(x_position: new_x, y_position: new_y)
@@ -85,29 +93,30 @@ class Piece < ApplicationRecord
     true
   end
 
-  def off_board?(new_x, new_y)
-      new_x < 1 || new_x > 8 || new_y < 1 || new_y > 8
-  end
-
   def capture_piece!(captured_piece)
     captured_piece.update(x_position: nil, y_position: nil)
   end
 
-  def real_move?(new_x, new_y)
-    @piece = game.get_piece_at_coor(new_x, new_y)
-    return true if @piece.nil?
-    return false if @piece.id == id
-    true
+  def current_position?(new_x, new_y)
+    x_position == new_x && y_position == new_y
   end
 
-  def count_moves
+  def increment_move
     game.update(move_number: game.move_number + 1)
     update(game_move_number: game.move_number, piece_move_number: piece_move_number + 1)
-    update(has_moved: true)
+    update(piece_moved: true)
   end
+
 
 
 end
+
+PAWN = 'Pawn'.freeze
+ROOK = 'Rook'.freeze
+KNIGHT = 'Knight'.freeze
+BISHOP = 'Bishop'.freeze
+QUEEN = 'Queen'.freeze
+KING = 'King'.freeze
 
     
       
