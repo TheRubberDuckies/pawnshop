@@ -2,10 +2,10 @@ class Pawn < Piece
 
 
   	def valid_move?(new_x, new_y)
+      return false if is_obstructed?(new_x.to_i, new_y.to_i)
       return false if still_in_starting_square?(new_x.to_i, new_y.to_i)
       return false if backwards_move?(new_y.to_i)
       return false if sideways_move?(new_x.to_i, new_y.to_i)
-      #return false if is_obstructed?(new_x.to_i, new_y.to_i)
       return false if square_occupied?(new_x.to_i, new_y.to_i) && forwards_straight_move?(new_x.to_i, new_y.to_i)
       return true if pawn_capture?(new_x.to_i, new_y.to_i)
       if move_two_squares_ok?(new_x.to_i, new_y.to_i) && !square_occupied?(new_x.to_i, new_y.to_i)
@@ -73,3 +73,4 @@ class Pawn < Piece
 end
 
 PAWN = 'Pawn'.freeze
+      

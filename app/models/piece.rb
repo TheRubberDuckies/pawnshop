@@ -12,23 +12,21 @@ class Piece < ApplicationRecord
   	"#{color}-#{type.downcase}.png"
 	end
 
-#Updated move_to in a cleaner way. But same idea that you created.
   def move_to!(new_x, new_y)
     transaction do
-      unless real_move?(new_x, new_y)
-        raise ArgumentError, 'That is an invalid move. Piece is still in starting square.'
-      end
-      #unless valid_move?(new_x, new_y)
-        #raise ArgumentError, "That is an invalid move for #{type}"
-      #end
-      if square_occupied?(new_x, new_y)
-        occupying_piece = game.get_piece_at_coor(new_x, new_y)
-        raise ArgumentError, 'That is an invalid move. Cannot capture your own piece.' if (occupying_piece.is_white && is_white?) || (!occupying_piece.is_white && !is_white?)
-        capture_piece!(occupying_piece)
-      end
+      raise ArgumentError, "#{type} has not moved." unless real_move?(new_x, new_y)
+      occupying_piece = game.get_piece_at_coor(new_x, new_y)
+      raise ArgumentError, "That is an invalid move for #{type}" unless valid_move?(new_x, new_y) 
+      raise ArgumentError, 'That is an invalid move. Cannot capture your own piece.' if same_color?(occupying_piece)
+      capture_piece!(occupying_piece) if square_occupied?(new_x, new_y)
       update(x_position: new_x, y_position: new_y)
-      
+      raise ArgumentError, 'That is an invalid move that leaves your king in check.' 
+      if game.under_attack?(is_white, game.your_king(is_white).x_position, game.your_king(is_white).y_position)
     end
+  end
+
+  def same_color? (occupying_piece)
+    occupying_piece.present? && occupying_piece.color == color
   end
 
   def is_obstructed?(new_x, new_y)
@@ -80,7 +78,6 @@ class Piece < ApplicationRecord
                  Array.new(range_x + 1, new_y.to_i)
                end
     coordinates_array(x_values, y_values)
-  end
 
   def square_occupied?(new_x, new_y)
     piece = game.pieces.find_by(x_position: new_x, y_position: new_y)
@@ -111,6 +108,12 @@ class Piece < ApplicationRecord
 
 
 end
+
+    
+      
+
+      
+
 
   
       
