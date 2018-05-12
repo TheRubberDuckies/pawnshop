@@ -56,24 +56,30 @@ class Game < ApplicationRecord
     pieces.find_by(x_position: x_pos, y_position: y_pos)
   end
 
-  def opponent_king(is_white)
+  def enemy_king(is_white)
     pieces.find_by(type: KING, is_white: !is_white)
   end
 
-  def your_king(is_white)
+  def friendly_king(is_white)
     pieces.find_by(type: KING, is_white: is_white)
   end
 
-  #def under_attack?(is_white, x_pos, y_pos)
-    #pieces.where.not(is_white: is_white, x_position: nil).find_each do |piece|
-      #return true if piece.valid_move?(x_pos, y_pos)
-      #return true if piece.type == PAWN && piece.can_attack_square?(x_pos, y_pos)
-    #end
-    #false
+  def attacking_piece(is_white)
+    pieces.where(is_white: !is_white).where.not(x_position: nil, y_position: nil).find_each do |piece|
+      return piece if piece.valid_move?(friendly_king(is_white).x_position, friendly_king(is_white).y_position)
+    end
+  end
+
+  def under_attack?(is_white, x_pos, y_pos)
+    pieces.where.not(is_white: is_white, x_position: nil).find_each do |piece|
+      return true if piece.valid_move?(x_pos, y_pos)
+      return true if piece.type == PAWN && piece.can_attack_square?(x_pos, y_pos)
+    end
+    false
   end
     
   def check?(is_white)
-    under_attack?(is_white, your_king(is_white).x_position, your_king(is_white).y_position)
+    under_attack?(is_white, friendly_king(is_white).x_position, friendly_king(is_white).y_position)
   end
 
   def forfeit(current_user)
@@ -94,4 +100,4 @@ class Game < ApplicationRecord
   DRAW = 4
 
 
-
+end

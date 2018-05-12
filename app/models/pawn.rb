@@ -2,7 +2,6 @@ class Pawn < Piece
 
   def valid_move?(new_x, new_y)
     return false if is_obstructed?(new_x, new_y)
-    return false if still_at_starting_position?(new_x.to_i, new_y.to_i)
     return true if capture_move?(new_x.to_i, new_y.to_i)
     return true if en_passant_capture?(new_x.to_i, new_y.to_i)
     if allowed_to_move?(new_x.to_i, new_y.to_i) && !square_occupied?(new_x.to_i, new_y.to_i)
@@ -37,10 +36,6 @@ class Pawn < Piece
       return true
     end
     false
-  end
-
-  def still_at_starting_position?(new_x, new_y) 
-    (is_white? && x_position == 2) || (!is_white && x_position == 7)
   end
 
   def moving_two_squares?(new_x, new_y)

@@ -32,6 +32,8 @@ class GamesController < ApplicationController
     black_player_name = @game.black_player.name 
     white_player_turn = @game.white_player_turn
     game_state = @game.state
+    white_king_check = @game.check?(true)
+    black_king_check = @game.check?(false)
     
     
   end

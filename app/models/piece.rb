@@ -113,6 +113,16 @@ class Piece < ApplicationRecord
     update(game_move_number: game.move_number, piece_move_number: piece_move_number + 1)
     update(piece_moved: true)
   end
+
+  def off_board?(new_x, new_y)
+    new_x < 1 || new_x > 8 || new_y < 1 || new_y > 8
+  end
+
+  def straight_move?(new_x, new_y)
+    (new_x.to_i - x_position.to_i != 0 || new_y.to_i - y_position.to_i != 0) &&
+      (new_x == x_position) || (new_y == y_position) || (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs
+  end
+
 end
 
 PAWN = 'Pawn'.freeze
