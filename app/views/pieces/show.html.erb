@@ -25,7 +25,7 @@
                   class="black"
                 <% end %>
                 >
-                <%= link_to game_piece_path(current_game, @piece, params: {x_position: row, y_position: col}), class: "move_to", method: :put do %>
+                <%= link_to game_piece_path(current_game, @piece, params: {x_position: col, y_position: row}), class: "move_to", method: :put do %>
                   <% piece_image = current_game.render_piece(col, row) %>
                   <% if piece_image.present? %>
 

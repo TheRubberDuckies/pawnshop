@@ -14,9 +14,9 @@ class Piece < ApplicationRecord
 
   def move_to!(new_x, new_y)
     transaction do
-      #if current_position?(new_x, new_y)
-        #raise ArgumentError, 'That is an invalid move. Piece is still in starting square.'
-      #end
+      if current_position?(new_x, new_y)
+        raise ArgumentError, 'That is an invalid move. Piece is still in starting square.'
+      end
       unless valid_move?(new_x, new_y)
         raise ArgumentError, "That is an invalid move for #{type}"
       end
@@ -51,8 +51,7 @@ class Piece < ApplicationRecord
 
   #covers vertical, horizontal, and diagonal moves 
   def straight_move?(new_x, new_y)
-    (new_x.to_i - x_position.to_i != 0 || new_y.to_i - y_position.to_i != 0) &&
-      (new_x.to_i == x_position.to_i || new_y.to_i == y_position.to_i || (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs
+    (new_x.to_i - x_position.to_i != 0 || new_y.to_i - y_position.to_i != 0) && (new_x.to_i == x_position.to_i) || (new_y.to_i == y_position.to_i) || (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs
   end
 
   def straight_obstruction?(new_x, new_y)
