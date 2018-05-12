@@ -9,8 +9,18 @@ class King < Piece
     	(x_difference <= 1) && (y_difference <= 1)
   end
   	false
-end 
-  #still need to account for invalid move if King moves into check
+
+  def can_move_out_of_check?
+    ((x_position.to_i - 1)..(x_position.to_i + 1)).each do |x|
+      next if x < 1 || x > 8
+      ((y_position.to_i - 1)..(y_position.to_i + 1)).each do |y|
+        next if y < 1 || y > 8
+        return true if legal_move?(x, y) && !game.under_attack?(is_white, x, y)
+      end
+    end
+    false
+  end
+end
 
 
 

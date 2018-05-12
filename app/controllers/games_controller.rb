@@ -28,12 +28,12 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    white_player_name = @game.white_player.name
-    black_player_name = @game.black_player.name 
-    white_player_turn = @game.white_player_turn
-    game_state = @game.state
-    white_king_check = @game.check?(true)
-    black_king_check = @game.check?(false)
+    gon.white_player_name = @game.white_player.name
+    gon.black_player_name = @game.black_player.name 
+    gon.watch.white_player_turn = @game.white_player_turn
+    gon.watch.game_state = @game.state
+    gon.watch.white_king_check = @game.check?(true)
+    gon.watch.black_king_check = @game.check?(false)
     
     
   end
@@ -42,8 +42,10 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     if @game.black_player.nil?
       @game.update(black_player_id: current_user.id)
+      flash[:notice] = "You successfully joined the game!"
     else
       @game.update(white_player_id: current_user.id)
+      flash[:notice] = "You successfully joined the game!"
     end
     redirect_to game_path(@game)
   end 
@@ -54,16 +56,12 @@ class GamesController < ApplicationController
     redirect_to games_path, :notice => "Game Has Been Forfeited!" 
   end
 
+  
+
   private 
 
   def game_params
       params.require(:game).permit(:name, :white_player, :black_player)
   end
-
-  helper_method :current_game
-
-  def current_game 
-    @current_game ||= Game.find(params[:id])
-  end 
 
 end

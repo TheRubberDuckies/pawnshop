@@ -1,11 +1,21 @@
+<head>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+  integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+  crossorigin="anonymous"> 
+</script>
+</head>
+
+<body>
+
 <h1 class="text-center">The Pawnshop</h1>
 
   <div id="turn">
-      <% if current_game.white_player_turn == true %>
-        <p>The current turn belongs to: <%= current_game.white_player.name %></p>
+      <% if @game.white_player_turn == true %>
+        <p>The current turn belongs to: <%= @game.white_player.name %></p>
       <% end %>
-      <% if current_game.white_player_turn == false %>
-        <p>The current turn belongs to: <%= current_game.black_player.name %></p>
+      <% if @game.white_player_turn == false %>
+        <p>The current turn belongs to: <%= @game.black_player.name %></p>
       <% end %>
     </div>
   </div>
@@ -25,11 +35,11 @@
                   class="black"
                 <% end %>
                 >
-                <%= link_to game_piece_path(current_game, @piece, params: {x_position: col, y_position: row}), class: "move_to", method: :put do %>
-                  <% piece_image = current_game.render_piece(col, row) %>
+                <%= link_to game_piece_path(@game, @piece, params: {x_position: col, y_position: row}), class: "move_to", method: :put do %>
+                  <% piece_image = @game.render_piece(col, row) %>
                   <% if piece_image.present? %>
 
-                    <% piece = current_game.get_piece_at_coor(col, row) %>
+                    <% piece = @game.get_piece_at_coor(col, row) %>
                       
                     <%= image_tag piece_image, :id => "piece", :data => {
                         :id => piece.id,

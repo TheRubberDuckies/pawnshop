@@ -49,6 +49,8 @@ gem 'devise'
 # fonts and stylesheets as a Rails engine
 gem "font-awesome-rails"
 
+gem 'gon'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

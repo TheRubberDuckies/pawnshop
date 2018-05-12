@@ -15,10 +15,10 @@
     <div id="currentUser" data-current-user-id=<%= current_user.id %>>
       <p>You are logged in as <%= current_user.name %></p>
     </div>
-    <div id="whitePlayer" data-user-white-id=<%= @game.white_player_id %>>
+    <div id="whitePlayer" data-white-player-id=<%= @game.white_player_id %>>
       <p><%= @game.white_player.name %> is playing as white.</p>
     </div>
-    <div id="blackPlayer" data-user-black-id=<%= @game.black_player_id %>>
+    <div id="blackPlayer" data-black-player-id=<%= @game.black_player_id %>>
       <p><%= @game.black_player.name %> is playing as black.</p>
     </div>
     <div id="gameEndMessages"> 
@@ -47,11 +47,11 @@
     </div>
 
     <div id="turn">
-      <% if current_game.white_player_turn == true %>
-        <p>The current turn belongs to: <%= current_game.white_player.name %></p>
+      <% if @game.white_player_turn == true %>
+        <p>The current turn belongs to: <%= @game.white_player.name %></p>
       <% end %>
-      <% if current_game.white_player_turn == false %>
-        <p>The current turn belongs to: <%= current_game.black_player.name %></p>
+      <% if @game.white_player_turn == false %>
+        <p>The current turn belongs to: <%= @game.black_player.name %></p>
       <% end %>
     </div>
   </div>
@@ -75,7 +75,7 @@
 
                  
                   <% piece = @game.get_piece_at_coor(col, row) %>
-                    <%= link_to game_piece_path(current_game, piece.id) do %>
+                    <%= link_to game_piece_path(@game, piece.id) do %>
                       <%= image_tag piece_image, :id => "piece", :data => {
                           :id => piece.id,
                           :type => piece.type,

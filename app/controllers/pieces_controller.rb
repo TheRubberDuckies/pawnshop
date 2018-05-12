@@ -2,32 +2,32 @@ class PiecesController < ApplicationController
 
   def show
     @piece = Piece.find(params[:id])
-  end
-
-  def create
-    @piece = current_game.pieces.create(piece_params)
+    @game = @piece.game
   end
 
   def update
     @piece = Piece.find(params[:id])
+    @game = @piece.game 
     @piece.move_to!(params[:x_position], params[:y_position])
-    redirect_to game_path(current_game[:id])
-    @current_game.update(white_player_turn: !@current_game.white_player_turn)
+    redirect_to game_path(@game)
+    @game.update(white_player_turn: !@game.white_player_turn)
+    if @game.stalemate?(!@piece.is_white)
+      @game.update(state: Game::STALEMATE)
+      @game.update(white_player_turn: nil)
+    end
+    if @game.checkmate?(!@piece.is_white)
+      @game.update(state: Game::CHECKMATE)
+      @game.update(white_player_turn: nil)
+    end
+  rescue ArgumentError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
-  private 
-
-  def piece_params 
-    params.permit(:x_position, :y_position, :type)
-  end 
-
-  helper_method :current_game
-
-  def current_game 
-    @current_game ||= Game.find(params[:game_id])
-  end 
-
 end 
+  
+
+
+  
 
   
   
