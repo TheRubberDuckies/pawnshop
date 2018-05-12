@@ -14,22 +14,22 @@
   <div class="col-10 center offset-1">
     <table id="chessboard">
       <tbody>
-        <% 1.upto(8).each do |col| %>                                     
+        <% 8.downto(1).each do |row| %>                                     
           <tr> 
-            <% 8.downto(1).each do |row| %>
+            <% 1.upto(8).each do |col| %>
               <td
                 id=<%="#{col}#{row}"%>
-                <% if (col + row).odd? %>
-                  class="black"
-                <% else %>
+                <% if (row + col).odd? %>
                   class="white"
+                <% else %>
+                  class="black"
                 <% end %>
                 >
                 <%= link_to game_piece_path(current_game, @piece, params: {x_position: row, y_position: col}), class: "move_to", method: :put do %>
-                  <% piece_image = current_game.render_piece(row, col) %>
+                  <% piece_image = current_game.render_piece(col, row) %>
                   <% if piece_image.present? %>
 
-                    <% piece = current_game.get_piece_at_coor(row, col) %>
+                    <% piece = current_game.get_piece_at_coor(col, row) %>
                       
                     <%= image_tag piece_image, :id => "piece", :data => {
                         :id => piece.id,

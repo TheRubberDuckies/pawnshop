@@ -14,26 +14,22 @@ class Piece < ApplicationRecord
 
   def move_to!(new_x, new_y)
     transaction do
-
-      if current_position?(new_x, new_y)
-        return "#{type} has not moved."
-      end 
-
-      if valid_move?(new_x, new_y)
-        return "That is an invalid move for #{type}" 
-      end 
-
+      #if current_position?(new_x, new_y)
+        #raise ArgumentError, 'That is an invalid move. Piece is still in starting square.'
+      #end
+      unless valid_move?(new_x, new_y)
+        raise ArgumentError, "That is an invalid move for #{type}"
+      end
       if square_occupied?(new_x, new_y)
         occupying_piece = game.get_piece_at_coor(new_x, new_y)
-        if (occupying_piece.is_white && is_white?) || (!occupying_piece.is_white && !is_white?)
-          return "That is an invalid move. Cannot capture your own piece."
-        else 
-          capture_piece!(occupying_piece) 
-        end
+        raise ArgumentError, 'That is an invalid move. Cannot capture your own piece.' if (occupying_piece.is_white && is_white?) || (!occupying_piece.is_white && !is_white?)
+        capture_piece!(occupying_piece)
       end
       update(x_position: new_x, y_position: new_y)
     end
   end
+
+
 
   def is_obstructed?(new_x, new_y)
     return false if type == KNIGHT
@@ -41,10 +37,22 @@ class Piece < ApplicationRecord
     false
   end 
 
+  def vertical_move?(new_x, new_y)
+    x_position == new_x && y_position != new_y
+  end
+
+  def horizontal_move?(new_x, new_y)
+    (x_position != new_x) && (y_position == new_y)
+  end 
+  
+  def diagonal_move?(new_x, new_y)
+    (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs
+  end 
+
   #covers vertical, horizontal, and diagonal moves 
   def straight_move?(new_x, new_y)
     (new_x.to_i - x_position.to_i != 0 || new_y.to_i - y_position.to_i != 0) &&
-      (new_x == x_position || new_y == y_position || (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs)
+      (new_x.to_i == x_position.to_i || new_y.to_i == y_position.to_i || (new_x.to_i - x_position.to_i).abs == (new_y.to_i - y_position.to_i).abs
   end
 
   def straight_obstruction?(new_x, new_y)
@@ -106,9 +114,6 @@ class Piece < ApplicationRecord
     update(game_move_number: game.move_number, piece_move_number: piece_move_number + 1)
     update(piece_moved: true)
   end
-
-
-
 end
 
 PAWN = 'Pawn'.freeze
