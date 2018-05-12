@@ -82,12 +82,38 @@ class Game < ApplicationRecord
     under_attack?(is_white, friendly_king(is_white).x_position, friendly_king(is_white).y_position)
   end
 
+  def checkmate?(is_white)
+    return false unless check?(is_white)
+    # return false if the piece attacking the king is also under attack / can be captured.
+    return false if under_attack?(attacking_piece(is_white).is_white, attacking_piece(is_white).x_position, attacking_piece(is_white).y_position)
+    # currently only the method can_move_out_of_check? is not working correctly.
+    return false if friendly_king(is_white).can_move_out_of_check?
+    return false if attacking_piece(is_white).can_be_blocked?(friendly_king(is_white).x_position, friendly_king(is_white).y_position)
+    update!(player_win: black_player_id, player_lose: white_player_id) if is_white == true
+    update!(player_win: white_player_id, player_lose: black_player_id) if is_white == false
+    true
+  end
+
   def forfeit(current_user)
     if current_user.id == white_player_id
       update!(player_win: black_player_id, player_lose: white_player_id)
     elsif current_user.id == black_player_id
       update!(player_win: white_player_id, player_lose: black_player_id)
     end
+  end
+
+  def stalemate?(is_white)
+    return false if check?(is_white)
+    king = pieces.find_by(is_white: is_white, type: KING)
+    (1..8).each do |new_x|
+      (1..8).each do |new_y|
+        pieces.where(is_white: is_white).where.not(x_position: nil, y_position: nil, type: KING).find_each do |piece|
+          return false if piece.legal_move?(new_x, new_y)
+        end
+        return true if king.legal_move?(new_x, new_y) && under_attack?(is_white, new_x, new_y)
+      end
+    end
+    true
   end
 
   

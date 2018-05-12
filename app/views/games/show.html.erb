@@ -3,6 +3,12 @@
 </div>
 <br>
 
+<div id="gameId" data-game-id=<%= @game.id %>>
+  </div>
+
+  <div id="gameState" data-game-state=<%= @game.state %>>
+  </div>
+
 <h1 class="text-center">The Pawnshop</h1>
 
   <div id="gameinfo">
@@ -14,6 +20,30 @@
     </div>
     <div id="blackPlayer" data-user-black-id=<%= @game.black_player_id %>>
       <p><%= @game.black_player.name %> is playing as black.</p>
+    </div>
+    <div id="gameEndMessages"> 
+      <% if @game.checkmate?(true) %>
+        <p><%= User.find(@game.black_player_id).name %> has checkmated <%= User.find(@game.white_player_id).name %>!</p>
+      <% elsif @game.checkmate?(false) %>
+        <p><%= User.find(@game.white_player_id).name %> has checkmated <%= User.find(@game.black_player_id).name %>!</p>
+      <% elsif @game.stalemate?(true) %>
+        <p><%= User.find(@game.white_player_id).name %> has been stalemated by <%= User.find(@game.black_player_id).name %>!</p>
+      <% elsif @game.stalemate?(false) %>
+        <p><%= User.find(@game.black_player_id).name %> has been stalemated by <%= User.find(@game.white_player_id).name %>!</p>
+      <% end %>
+      <% if @game.state == Game::FORFEIT %>
+        <% losing_player = User.find(@game.player_lose) %>
+        <p><%= losing_player.name %> has forfeited the game!</p>
+      <% end %>
+    </div>
+
+    <div id="CheckMessages">
+      <% if @game.check?(true) %>
+        <p>The white king is in check!</p>
+      <% end %>
+      <% if @game.check?(false) %>
+        <p>The black king is in check!</p>
+      <% end %>
     </div>
 
     <div id="turn">
@@ -70,7 +100,7 @@
     <%= button_to "Go back to index of games", games_path, :method => :get, :class => "btn btn-success" %>        
     <br />
 
-    <% if current_user == @game.white_player || current_user == @game.black_player %>
+    <% if @game.state == Game::IN_PROGRESS && @game.black_player != nil %>
       <%= link_to "Forfeit Game", forfeit_game_path(@game), :class => "btn btn-danger", :method => :patch,  data: {confirm: "Are you sure? Forfeited games cannot be recovered."} %>
     <% end %> 
       

@@ -2,6 +2,8 @@ class Pawn < Piece
 
   def valid_move?(new_x, new_y)
     return false if is_obstructed?(new_x, new_y)
+    return false if horizontal_move?(new_x, new_y)
+    return false if backwards_move?(new_x, new_y)
     return true if capture_move?(new_x.to_i, new_y.to_i)
     return true if en_passant_capture?(new_x.to_i, new_y.to_i)
     if allowed_to_move?(new_x.to_i, new_y.to_i) && !square_occupied?(new_x.to_i, new_y.to_i)
@@ -38,6 +40,14 @@ class Pawn < Piece
     false
   end
 
+  def backwards_move?(new_x, new_y)
+    if is_white
+      return (new_y.to_i < y_position.to_i)
+    elsif !is_white
+     return (new_y.to_i > y_position.to_i)
+    end
+  end  
+    
   def moving_two_squares?(new_x, new_y)
     x_difference = (new_x.to_i - x_position.to_i).abs
     y_difference = (new_y.to_i - y_position.to_i).abs
