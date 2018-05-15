@@ -1,26 +1,8 @@
-<div class="container justify-content-center">
+<div class="text-center">
   <h1>Welcome to Game<%=@game.id%></h1>
 </div>
 <br>
-
-<div id="gameId" data-game-id=<%= @game.id %>>
-  </div>
-
-  <div id="gameState" data-game-state=<%= @game.state %>>
-  </div>
-
-<h1 class="text-center">The Pawnshop</h1>
-
-  <div id="gameinfo">
-    <div id="currentUser" data-current-user-id=<%= current_user.id %>>
-      <p>You are logged in as <%= current_user.name %></p>
-    </div>
-    <div id="whitePlayer" data-white-player-id=<%= @game.white_player_id %>>
-      <p><%= @game.white_player.name %> is playing as white.</p>
-    </div>
-    <div id="blackPlayer" data-black-player-id=<%= @game.black_player_id %>>
-      <p><%= @game.black_player.name %> is playing as black.</p>
-    </div>
+    
     <div id="gameEndMessages"> 
       <% if @game.checkmate?(true) %>
         <p><%= User.find(@game.black_player_id).name %> has checkmated <%= User.find(@game.white_player_id).name %>!</p>
@@ -37,16 +19,7 @@
       <% end %>
     </div>
 
-    <div id="CheckMessages">
-      <% if @game.check?(true) %>
-        <p>The white king is in check!</p>
-      <% end %>
-      <% if @game.check?(false) %>
-        <p>The black king is in check!</p>
-      <% end %>
-    </div>
-
-    <div id="turn">
+    <div class ="text-center">
       <% if @game.white_player_turn == true %>
         <p>The current turn belongs to: <%= @game.white_player.name %></p>
       <% end %>
@@ -73,7 +46,7 @@
                 <% piece_image = @game.render_piece(col, row) %>
                 <% if piece_image.present? %>
 
-                 
+                 <div id="dragpiece" class="draggable drag-drop"></div>
                   <% piece = @game.get_piece_at_coor(col, row) %>
                     <%= link_to game_piece_path(@game, piece.id) do %>
                       <%= image_tag piece_image, :id => "piece", :data => {

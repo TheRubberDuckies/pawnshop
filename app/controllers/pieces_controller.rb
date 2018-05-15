@@ -19,11 +19,10 @@ class PiecesController < ApplicationController
       @game.update(state: Game::CHECKMATE)
       @game.update(white_player_turn: nil)
     end
-  rescue ArgumentError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
 end 
+  
   
 
 
