@@ -50,9 +50,8 @@ class Game < ApplicationRecord
 
   def checkmate?(color)
     return false unless in_check?(color)
-    # return false if capture_opponent_causing_check?(color)
-    # return false if i_can_move_out_of_check?(color)
-    return false if i_can_avoid_check?(color)
+    return false if capture_opponent_causing_check?(color)
+    return false if i_can_move_out_of_check?(color)
     true
   end
 
@@ -96,21 +95,6 @@ class Game < ApplicationRecord
     state
   end
 
-  def i_can_avoid_check?(color)
-    available_moves = []
-    my_pieces(color).each do |piece|
-      1.upto(8) do |x|
-        1.upto(8) do |y|
-          if piece.valid_move?(x, y) && !piece.move_causes_check?(x, y)
-            available_moves << [x, y]
-          end
-        end
-      end
-    end
-
-    available_moves.any?
-  end
-
   # Checkmate Ends
 
   def render_piece(x_pos, y_pos)
@@ -133,7 +117,7 @@ class Game < ApplicationRecord
   def under_attack?(is_white, x_pos, y_pos)
     pieces.where.not(is_white: is_white, x_position: nil).find_each do |piece|
       return true if piece.valid_move?(x_pos, y_pos)
-      return true if piece.type == 'Pawn' && piece.can_attack_square?(x_pos, y_pos)
+      return true if piece.type == PAWN && piece.can_attack_square?(x_pos, y_pos)
     end
     false
   end

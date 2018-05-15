@@ -1,6 +1,6 @@
 class Pawn < Piece
   def valid_move?(new_x, new_y)
-    # return false if still_in_starting_square?(new_x.to_i, new_y.to_i)
+    return false if still_in_starting_square?(new_x.to_i, new_y.to_i)
     return false if backwards_move?(new_y.to_i)
     return false if sideways_move?(new_x.to_i, new_y.to_i)
     # return false if is_obstructed?(new_x.to_i, new_y.to_i)
@@ -9,8 +9,7 @@ class Pawn < Piece
     if move_two_squares_ok?(new_x.to_i, new_y.to_i) && !square_occupied?(new_x.to_i, new_y.to_i)
       update(turn_pawn_moved_twice: game.move_number + 1) if moving_two_squares?(new_x.to_i, new_y.to_i)
       return true
-  end
-end
+    end
 
     def can_attack_square?(new_x, new_y)
       x_difference = (new_x.to_i - x_position.to_i).abs
@@ -61,3 +60,4 @@ end
         end
       end
     end
+  end

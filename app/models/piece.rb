@@ -103,10 +103,10 @@ class Piece < ApplicationRecord
   end
 
 
-  def is_diagonally_obstructed?(new_x, new_y)
+  def is_diagonally_obstructed(new_x, new_y)
     x1 = x_position
     y1 = y_position
-
+    raise 'Invalid move' if (x1 - new_x).abs != (y1 - new_y).abs
 
     if (x1 < new_x) && (y1 < new_y)
 
