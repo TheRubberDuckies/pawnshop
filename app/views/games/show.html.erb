@@ -15,6 +15,13 @@
     <div id="blackPlayer" data-user-black-id=<%= @game.black_player_id %>>
       <p><%= @game.black_player.name %> is playing as black.</p>
     </div>
+  </div>
+
+  <%= button_to "Castle to King Side?", games_path, :method => :put, :class => "btn btn-success",
+  data: {confirm: "Castle to King Side? This can only be used once."} %>
+
+  <%= button_to "Castle to Queen Side?", games_path, :method => :put, :class => "btn btn-success",
+  data: {confirm: "Castle to King Side? This can only be used once."}%>
 
     
     

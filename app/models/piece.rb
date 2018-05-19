@@ -25,6 +25,26 @@ class Piece < ApplicationRecord
     occupying_piece.present? && occupying_piece.color == color
   end
 
+  def able_to_castle?
+
+  #return false if KING or either ROOK has_moved?
+  return true if (!KING has_moved? && !ROOK has_moved?) &&
+   !castle_path_obstructed?(new_x, new_y) && 
+   !king_currently_in_check?(color) &&
+   !king_passes_through_check? &&
+   !leaves_castled_king_in_check?  
+  else 
+  #BUTTON to castle King Side
+  #Alert, "Castle to King Side?"
+  #KING new_x == 7, y_position == newY
+
+  #BUTTON to castle Queen side
+  #Alert, "Castle to Queen side?"
+  #KING new_x == 3, y_position == newY
+
+    
+
+
 
   def square_occupied?(new_x, new_y)
     piece = game.pieces.find_by(x_position: new_x, y_position: new_y)
@@ -60,7 +80,7 @@ class Piece < ApplicationRecord
   
 
 
-  def is_vertically_obstructed?(_new_x, new_y)
+  def is_vertically_obstructed?(new_x, new_y)
     x1 = x_position
     y1 = y_position
     if y1 < new_y

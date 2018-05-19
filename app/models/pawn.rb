@@ -7,10 +7,8 @@ class Pawn < Piece
 
     # return false if is_obstructed?(new_x.to_i, new_y.to_i)
     return false if square_occupied?(new_x.to_i, new_y.to_i) 
-    return true if pawn_capture?(new_x.to_i, new_y.to_i)
-    if move_two_squares_ok?(new_x.to_i, new_y.to_i) && !square_occupied?(new_x.to_i, new_y.to_i)
-      update(turn_pawn_moved_twice: game.move_number + 1) if moving_two_squares?(new_x.to_i, new_y.to_i)
-      return true
+    return true if en_passant_allowed?(new_x.to_i, new_y.to_i)
+    
   end
 
   def can_attack_square?(new_x, new_y)
@@ -20,10 +18,18 @@ class Pawn < Piece
     false
   end
 
-
-
   private
 
+  def en_passant_allowed?(new_x, new_y)
+     adjacent_enemy_pawn = Pawn.find_by(Pawn.find_by(x_position: new_x, y_position: y_position, is_white: !is_white)
+    if adjacent_enemy_pawn.moved_two_squares? && !square_not_occupied?(new_x, new_y) &&
+      (y_position == 4 || y_position == 5) && !pawn_moved_twice?
+      capture_piece!(adjacent_enemy_pawn)
+      return true 
+    end 
+    false 
+  end 
+    
   def pawn_capture?(new_x, new_y)
     x_difference = (new_x.to_i - x_position.to_i).abs
     y_difference = (new_y.to_i - y_position.to_i).abs
