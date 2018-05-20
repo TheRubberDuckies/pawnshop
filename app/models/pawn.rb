@@ -55,7 +55,17 @@ end
     else
       x_difference.zero? && y_difference == 1 || x_difference.zero? && y_difference == 2
 
-    end
+    end  
+
+  def pawn_promotion
+    pawn = game.pieces.where(:type =>"Pawn")
+    knight = game.pieces.where(:type =>"Knight")
+    bishop = game.pieces.where(:type =>"Bishop")
+    rook = game.pieces.where(:type =>"Rook")
+    
+    if pawn?
+    (y_position.to_i == 1 && is_white?) || (y_position.to_i == 8 && !is_white?) 
+
   end
-end  
-   
+
+  end
